@@ -13,10 +13,10 @@ from data import create_dataloader, create_dataset
 from data.data_sampler import EnlargedSampler
 from data.prefetch_dataloader import CPUPrefetcher, CUDAPrefetcher
 from models import create_model
-from utils import (MessageLogger, check_resume, get_env_info, 
-                           get_root_logger, get_time_str, init_tb_logger,
-                           init_wandb_logger, make_exp_dirs, mkdir_and_rename,
-                           set_random_seed)
+from utils import (MessageLogger, check_resume, get_env_info,
+                   get_root_logger, get_time_str, init_tb_logger,
+                   init_wandb_logger, make_exp_dirs, mkdir_and_rename,
+                   set_random_seed)
 from utils.dist_util import get_dist_info, init_dist
 from utils.options import dict2str, parse
 
@@ -97,8 +97,8 @@ def create_train_val_dataloader(opt, logger):
                 seed=opt['manual_seed'])
 
             num_iter_per_epoch = math.ceil(
-                len(train_set) * dataset_enlarge_ratio /
-                (dataset_opt['batch_size_per_gpu'] * opt['world_size']))
+                len(train_set) * dataset_enlarge_ratio / (
+                    dataset_opt['batch_size_per_gpu'] * opt['world_size']))
             total_iters = int(opt['train']['total_iter'])
             total_epochs = math.ceil(total_iters / (num_iter_per_epoch))
             logger.info(
@@ -240,7 +240,7 @@ def main():
                 current_iter, warmup_iter=opt['train'].get('warmup_iter', -1))
 
             # ------Progressive learning ---------------------
-            j = ((current_iter>groups) !=True).nonzero()[0]
+            j = (current_iter <= groups).nonzero()[0]
             if len(j) == 0:
                 bs_j = len(groups) - 1
             else:
@@ -272,11 +272,11 @@ def main():
                 y0 = int((gt_size - mini_gt_size) * random.random())
                 x1 = x0 + mini_gt_size
                 y1 = y0 + mini_gt_size
-                lq = lq[:,:,x0:x1,y0:y1]
-                gt = gt[:,:,x0*scale:x1*scale,y0*scale:y1*scale]
-            #-------------------------------------------
+                lq = lq[:, :, x0:x1, y0:y1]
+                gt = gt[:, :, x0 * scale:x1 * scale, y0 * scale:y1 * scale]
+            # -------------------------------------------
 
-            model.feed_train_data({'lq': lq, 'gt':gt})
+            model.feed_train_data({'lq': lq, 'gt': gt})
             model.optimize_parameters(current_iter)
 
             iter_time = time.time() - iter_time
@@ -300,7 +300,7 @@ def main():
                 # wheather use uint8 image to compute metrics
                 use_image = opt['val'].get('use_image', True)
                 model.validation(val_loader, current_iter, tb_logger,
-                                 opt['val']['save_img'], rgb2bgr, use_image )
+                                 opt['val']['save_img'], rgb2bgr, use_image)
 
             data_time = time.time()
             iter_time = time.time()
