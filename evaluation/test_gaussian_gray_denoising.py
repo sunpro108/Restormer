@@ -11,7 +11,7 @@ import torch.nn as nn
 import torch
 import torch.nn.functional as F
 
-from basicsr.models.archs.restormer_arch import Restormer
+from models.archs.restormer_arch import Restormer
 from skimage import img_as_ubyte
 from natsort import natsorted
 from glob import glob

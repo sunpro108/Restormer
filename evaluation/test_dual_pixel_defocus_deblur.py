@@ -13,7 +13,7 @@ import torch.nn as nn
 import torch
 
 from skimage import img_as_ubyte
-from basicsr.models.archs.restormer_arch import Restormer
+from models.archs.restormer_arch import Restormer
 import cv2
 import utils
 from natsort import natsorted

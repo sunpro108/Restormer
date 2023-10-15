@@ -3,15 +3,15 @@ import torch
 from pathlib import Path
 from torch.utils import data as data
 
-from basicsr.data.transforms import augment, paired_random_crop
-from basicsr.utils import FileClient, get_root_logger, imfrombytes, img2tensor
+from data.transforms import augment, paired_random_crop
+from utils import FileClient, get_root_logger, imfrombytes, img2tensor
 
 
 class Vimeo90KDataset(data.Dataset):
     """Vimeo90K dataset for training.
 
     The keys are generated from a meta info txt file.
-    basicsr/data/meta_info/meta_info_Vimeo90K_train_GT.txt
+    data/meta_info/meta_info_Vimeo90K_train_GT.txt
 
     Each line contains:
     1. clip name; 2. frame number; 3. image shape, seperated by a white space.

@@ -12,7 +12,7 @@ import torch.nn as nn
 import torch.nn.functional as F
 import utils
 
-from basicsr.models.archs.restormer_arch import Restormer
+from models.archs.restormer_arch import Restormer
 from skimage import img_as_ubyte
 import h5py
 import scipy.io as sio

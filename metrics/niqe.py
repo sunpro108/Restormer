@@ -4,7 +4,7 @@ import numpy as np
 from scipy.ndimage.filters import convolve
 from scipy.special import gamma
 
-from basicsr.metrics.metric_util import reorder_image, to_y_channel
+from metrics.metric_util import reorder_image, to_y_channel
 
 
 def estimate_aggd_param(block):
@@ -183,7 +183,7 @@ def calculate_niqe(img, crop_border, input_order='HWC', convert_to='y'):
     """
 
     # we use the official params estimated from the pristine dataset.
-    niqe_pris_params = np.load('basicsr/metrics/niqe_pris_params.npz')
+    niqe_pris_params = np.load('metrics/niqe_pris_params.npz')
     mu_pris_param = niqe_pris_params['mu_pris_param']
     cov_pris_param = niqe_pris_params['cov_pris_param']
     gaussian_window = niqe_pris_params['gaussian_window']

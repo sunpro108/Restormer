@@ -40,14 +40,18 @@ args = parser.parse_args()
 def load_img(filepath):
     return cv2.cvtColor(cv2.imread(filepath), cv2.COLOR_BGR2RGB)
 
+
 def save_img(filepath, img):
     cv2.imwrite(filepath,cv2.cvtColor(img, cv2.COLOR_RGB2BGR))
+
 
 def load_gray_img(filepath):
     return np.expand_dims(cv2.imread(filepath, cv2.IMREAD_GRAYSCALE), axis=2)
 
+
 def save_gray_img(filepath, img):
     cv2.imwrite(filepath, img)
+
 
 def get_weights_and_parameters(task, parameters):
     if task == 'Motion_Deblurring':
@@ -69,7 +73,8 @@ def get_weights_and_parameters(task, parameters):
         parameters['LayerNorm_type'] =  'BiasFree'
     return weights, parameters
 
-task    = args.task
+
+task = args.task
 inp_dir = args.input_dir
 out_dir = os.path.join(args.result_dir, task)
 
@@ -92,7 +97,7 @@ if len(files) == 0:
 parameters = {'inp_channels':3, 'out_channels':3, 'dim':48, 'num_blocks':[4,6,6,8], 'num_refinement_blocks':4, 'heads':[1,2,4,8], 'ffn_expansion_factor':2.66, 'bias':False, 'LayerNorm_type':'WithBias', 'dual_pixel_task':False}
 weights, parameters = get_weights_and_parameters(task, parameters)
 
-load_arch = run_path(os.path.join('basicsr', 'models', 'archs', 'restormer_arch.py'))
+load_arch = run_path(os.path.join('models', 'archs', 'restormer_arch.py'))
 model = load_arch['Restormer'](**parameters)
 
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
