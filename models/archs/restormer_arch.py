@@ -1,6 +1,6 @@
-## Restormer: Efficient Transformer for High-Resolution Image Restoration
-## Syed Waqas Zamir, Aditya Arora, Salman Khan, Munawar Hayat, Fahad Shahbaz Khan, and Ming-Hsuan Yang
-## https://arxiv.org/abs/2111.09881
+# Restormer: Efficient Transformer for High-Resolution Image Restoration
+# Syed Waqas Zamir, Aditya Arora, Salman Khan, Munawar Hayat, Fahad Shahbaz Khan, and Ming-Hsuan Yang
+# https://arxiv.org/abs/2111.09881
 
 
 import torch
@@ -13,8 +13,8 @@ from einops import rearrange
 
 
 
-##########################################################################
-## Layer Norm
+
+# Layer Norm
 
 def to_3d(x):
     return rearrange(x, 'b c h w -> b (h w) c')
@@ -71,8 +71,8 @@ class LayerNorm(nn.Module):
 
 
 
-##########################################################################
-## Gated-Dconv Feed-Forward Network (GDFN)
+
+# Gated-Dconv Feed-Forward Network (GDFN)
 class FeedForward(nn.Module):
     def __init__(self, dim, ffn_expansion_factor, bias):
         super(FeedForward, self).__init__()
@@ -94,8 +94,8 @@ class FeedForward(nn.Module):
 
 
 
-##########################################################################
-## Multi-DConv Head Transposed Self-Attention (MDTA)
+
+# Multi-DConv Head Transposed Self-Attention (MDTA)
 class Attention(nn.Module):
     def __init__(self, dim, num_heads, bias):
         super(Attention, self).__init__()
@@ -133,7 +133,7 @@ class Attention(nn.Module):
 
 
 
-##########################################################################
+
 class TransformerBlock(nn.Module):
     def __init__(self, dim, num_heads, ffn_expansion_factor, bias, LayerNorm_type):
         super(TransformerBlock, self).__init__()
@@ -151,8 +151,8 @@ class TransformerBlock(nn.Module):
 
 
 
-##########################################################################
-## Overlapped image patch embedding with 3x3 Conv
+
+# Overlapped image patch embedding with 3x3 Conv
 class OverlapPatchEmbed(nn.Module):
     def __init__(self, in_c=3, embed_dim=48, bias=False):
         super(OverlapPatchEmbed, self).__init__()
@@ -166,8 +166,8 @@ class OverlapPatchEmbed(nn.Module):
 
 
 
-##########################################################################
-## Resizing modules
+
+# Resizing modules
 class Downsample(nn.Module):
     def __init__(self, n_feat):
         super(Downsample, self).__init__()
@@ -188,8 +188,8 @@ class Upsample(nn.Module):
     def forward(self, x):
         return self.body(x)
 
-##########################################################################
-##---------- Restormer -----------------------
+
+#---------- Restormer -----------------------
 class Restormer(nn.Module):
     def __init__(self, 
         inp_channels=3, 
@@ -200,8 +200,8 @@ class Restormer(nn.Module):
         heads = [1,2,4,8],
         ffn_expansion_factor = 2.66,
         bias = False,
-        LayerNorm_type = 'WithBias',   ## Other option 'BiasFree'
-        dual_pixel_task = False        ## True for dual-pixel defocus deblurring only. Also set inp_channels=6
+        LayerNorm_type = 'WithBias',   # Other option 'BiasFree'
+        dual_pixel_task = False        # True for dual-pixel defocus deblurring only. Also set inp_channels=6
     ):
 
         super(Restormer, self).__init__()
@@ -210,35 +210,35 @@ class Restormer(nn.Module):
 
         self.encoder_level1 = nn.Sequential(*[TransformerBlock(dim=dim, num_heads=heads[0], ffn_expansion_factor=ffn_expansion_factor, bias=bias, LayerNorm_type=LayerNorm_type) for i in range(num_blocks[0])])
         
-        self.down1_2 = Downsample(dim) ## From Level 1 to Level 2
+        self.down1_2 = Downsample(dim) # From Level 1 to Level 2
         self.encoder_level2 = nn.Sequential(*[TransformerBlock(dim=int(dim*2**1), num_heads=heads[1], ffn_expansion_factor=ffn_expansion_factor, bias=bias, LayerNorm_type=LayerNorm_type) for i in range(num_blocks[1])])
         
-        self.down2_3 = Downsample(int(dim*2**1)) ## From Level 2 to Level 3
+        self.down2_3 = Downsample(int(dim*2**1)) # From Level 2 to Level 3
         self.encoder_level3 = nn.Sequential(*[TransformerBlock(dim=int(dim*2**2), num_heads=heads[2], ffn_expansion_factor=ffn_expansion_factor, bias=bias, LayerNorm_type=LayerNorm_type) for i in range(num_blocks[2])])
 
-        self.down3_4 = Downsample(int(dim*2**2)) ## From Level 3 to Level 4
+        self.down3_4 = Downsample(int(dim*2**2)) # From Level 3 to Level 4
         self.latent = nn.Sequential(*[TransformerBlock(dim=int(dim*2**3), num_heads=heads[3], ffn_expansion_factor=ffn_expansion_factor, bias=bias, LayerNorm_type=LayerNorm_type) for i in range(num_blocks[3])])
         
-        self.up4_3 = Upsample(int(dim*2**3)) ## From Level 4 to Level 3
+        self.up4_3 = Upsample(int(dim*2**3)) # From Level 4 to Level 3
         self.reduce_chan_level3 = nn.Conv2d(int(dim*2**3), int(dim*2**2), kernel_size=1, bias=bias)
         self.decoder_level3 = nn.Sequential(*[TransformerBlock(dim=int(dim*2**2), num_heads=heads[2], ffn_expansion_factor=ffn_expansion_factor, bias=bias, LayerNorm_type=LayerNorm_type) for i in range(num_blocks[2])])
 
 
-        self.up3_2 = Upsample(int(dim*2**2)) ## From Level 3 to Level 2
+        self.up3_2 = Upsample(int(dim*2**2)) # From Level 3 to Level 2
         self.reduce_chan_level2 = nn.Conv2d(int(dim*2**2), int(dim*2**1), kernel_size=1, bias=bias)
         self.decoder_level2 = nn.Sequential(*[TransformerBlock(dim=int(dim*2**1), num_heads=heads[1], ffn_expansion_factor=ffn_expansion_factor, bias=bias, LayerNorm_type=LayerNorm_type) for i in range(num_blocks[1])])
         
-        self.up2_1 = Upsample(int(dim*2**1))  ## From Level 2 to Level 1  (NO 1x1 conv to reduce channels)
+        self.up2_1 = Upsample(int(dim*2**1))  # From Level 2 to Level 1  (NO 1x1 conv to reduce channels)
 
         self.decoder_level1 = nn.Sequential(*[TransformerBlock(dim=int(dim*2**1), num_heads=heads[0], ffn_expansion_factor=ffn_expansion_factor, bias=bias, LayerNorm_type=LayerNorm_type) for i in range(num_blocks[0])])
         
         self.refinement = nn.Sequential(*[TransformerBlock(dim=int(dim*2**1), num_heads=heads[0], ffn_expansion_factor=ffn_expansion_factor, bias=bias, LayerNorm_type=LayerNorm_type) for i in range(num_refinement_blocks)])
         
-        #### For Dual-Pixel Defocus Deblurring Task ####
+        # For Dual-Pixel Defocus Deblurring Task #
         self.dual_pixel_task = dual_pixel_task
         if self.dual_pixel_task:
             self.skip_conv = nn.Conv2d(dim, int(dim*2**1), kernel_size=1, bias=bias)
-        ###########################
+        
             
         self.output = nn.Conv2d(int(dim*2**1), out_channels, kernel_size=3, stride=1, padding=1, bias=bias)
 
@@ -272,11 +272,11 @@ class Restormer(nn.Module):
         
         out_dec_level1 = self.refinement(out_dec_level1)
 
-        #### For Dual-Pixel Defocus Deblurring Task ####
+        # For Dual-Pixel Defocus Deblurring Task #
         if self.dual_pixel_task:
             out_dec_level1 = out_dec_level1 + self.skip_conv(inp_enc_level1)
             out_dec_level1 = self.output(out_dec_level1)
-        ###########################
+        
         else:
             out_dec_level1 = self.output(out_dec_level1) + inp_img
 

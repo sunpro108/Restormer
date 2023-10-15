@@ -1,7 +1,7 @@
 """
-## Restormer: Efficient Transformer for High-Resolution Image Restoration
-## Syed Waqas Zamir, Aditya Arora, Salman Khan, Munawar Hayat, Fahad Shahbaz Khan, and Ming-Hsuan Yang
-## https://arxiv.org/abs/2111.09881
+# Restormer: Efficient Transformer for High-Resolution Image Restoration
+# Syed Waqas Zamir, Aditya Arora, Salman Khan, Munawar Hayat, Fahad Shahbaz Khan, and Ming-Hsuan Yang
+# https://arxiv.org/abs/2111.09881
 """
 
 import numpy as np
@@ -33,7 +33,7 @@ parser.add_argument('--save_images', action='store_true', help='Save denoised im
 
 args = parser.parse_args()
 
-####### Load yaml #######
+# Load yaml #
 yaml_file = 'Options/DefocusDeblur_DualPixel_16bit_Restormer.yml'
 import yaml
 
@@ -45,7 +45,7 @@ except ImportError:
 x = yaml.load(open(yaml_file, mode='r'), Loader=Loader)
 
 s = x['network_g'].pop('type')
-##########################
+
 
 model_restoration = Restormer(**x['network_g'])
 

@@ -1,17 +1,21 @@
+import os
+import random
+import cv2
+import numpy as np
+import torch
 from torch.utils import data as data
 from torchvision.transforms.functional import normalize
 
-from data.data_util import (paired_paths_from_folder,
-                                    paired_DP_paths_from_folder,
-                                    paired_paths_from_lmdb,
-                                    paired_paths_from_meta_info_file)
-from data.transforms import augment, paired_random_crop, paired_random_crop_DP, random_augmentation
-from utils import FileClient, imfrombytes, img2tensor, padding, padding_DP, imfrombytesDP
+from data.data_util import (
+    paths_from_lmdb,
+    paired_paths_from_folder,
+    paired_DP_paths_from_folder,
+    paired_paths_from_lmdb,
+    paired_paths_from_meta_info_file)
+# from data.gransforms import augment
+from data.transforms import paired_random_crop, paired_random_crop_DP, random_augmentation
+from utils import FileClient, imfrombytes, img2tensor, padding, padding_DP, imfrombytesDP, scandir
 
-import random
-import numpy as np
-import torch
-import cv2
 
 class Dataset_PairedImage(data.Dataset):
     """Paired image dataset for image restoration.
@@ -50,7 +54,7 @@ class Dataset_PairedImage(data.Dataset):
         self.io_backend_opt = opt['io_backend']
         self.mean = opt['mean'] if 'mean' in opt else None
         self.std = opt['std'] if 'std' in opt else None
-        
+
         self.gt_folder, self.lq_folder = opt['dataroot_gt'], opt['dataroot_lq']
         if 'filename_tmpl' in opt:
             self.filename_tmpl = opt['filename_tmpl']
@@ -88,15 +92,15 @@ class Dataset_PairedImage(data.Dataset):
         img_bytes = self.file_client.get(gt_path, 'gt')
         try:
             img_gt = imfrombytes(img_bytes, float32=True)
-        except:
-            raise Exception("gt path {} not working".format(gt_path))
+        except Exception as e:
+            raise Exception(f"{e}: gt path: {gt_path} not working")
 
         lq_path = self.paths[index]['lq_path']
         img_bytes = self.file_client.get(lq_path, 'lq')
         try:
             img_lq = imfrombytes(img_bytes, float32=True)
-        except:
-            raise Exception("lq path {} not working".format(lq_path))
+        except Exception as e:
+            raise Exception(f"{e}: lq path {lq_path} not working")
 
         # augmentation for training
         if self.opt['phase'] == 'train':
@@ -111,7 +115,7 @@ class Dataset_PairedImage(data.Dataset):
             # flip, rotation augmentations
             if self.geometric_augs:
                 img_gt, img_lq = random_augmentation(img_gt, img_lq)
-            
+
         # BGR to RGB, HWC to CHW, numpy to tensor
         img_gt, img_lq = img2tensor([img_gt, img_lq],
                                     bgr2rgb=True,
@@ -120,7 +124,7 @@ class Dataset_PairedImage(data.Dataset):
         if self.mean is not None or self.std is not None:
             normalize(img_lq, self.mean, self.std, inplace=True)
             normalize(img_gt, self.mean, self.std, inplace=True)
-        
+
         return {
             'lq': img_lq,
             'gt': img_gt,
@@ -130,6 +134,7 @@ class Dataset_PairedImage(data.Dataset):
 
     def __len__(self):
         return len(self.paths)
+
 
 class Dataset_GaussianDenoising(data.Dataset):
     """Paired image dataset for image restoration.
@@ -175,7 +180,7 @@ class Dataset_GaussianDenoising(data.Dataset):
         self.file_client = None
         self.io_backend_opt = opt['io_backend']
         self.mean = opt['mean'] if 'mean' in opt else None
-        self.std = opt['std'] if 'std' in opt else None        
+        self.std = opt['std'] if 'std' in opt else None
 
         self.gt_folder = opt['dataroot_gt']
 
@@ -186,8 +191,7 @@ class Dataset_GaussianDenoising(data.Dataset):
         elif 'meta_info_file' in self.opt:
             with open(self.opt['meta_info_file'], 'r') as fin:
                 self.paths = [
-                    osp.join(self.gt_folder,
-                             line.split(' ')[0]) for line in fin
+                    os.path.join(self.gt_folder, line.split(' ')[0]) for line in fin
                 ]
         else:
             self.paths = sorted(list(scandir(self.gt_folder, full_path=True)))
@@ -210,19 +214,18 @@ class Dataset_GaussianDenoising(data.Dataset):
         if self.in_ch == 3:
             try:
                 img_gt = imfrombytes(img_bytes, float32=True)
-            except:
-                raise Exception("gt path {} not working".format(gt_path))
+            except Exception as e:
+                raise Exception(f"{e}: gt path {gt_path} not working")
 
             img_gt = cv2.cvtColor(img_gt, cv2.COLOR_BGR2RGB)
         else:
             try:
                 img_gt = imfrombytes(img_bytes, flag='grayscale', float32=True)
-            except:
-                raise Exception("gt path {} not working".format(gt_path))
+            except Exception as e:
+                raise Exception(f"{e}: gt path {gt_path} not working")
 
             img_gt = np.expand_dims(img_gt, axis=2)
         img_lq = img_gt.copy()
-
 
         # augmentation for training
         if self.opt['phase'] == 'train':
@@ -241,7 +244,6 @@ class Dataset_GaussianDenoising(data.Dataset):
                                         bgr2rgb=False,
                                         float32=True)
 
-
             if self.sigma_type == 'constant':
                 sigma_value = self.sigma_range
             elif self.sigma_type == 'random':
@@ -249,19 +251,18 @@ class Dataset_GaussianDenoising(data.Dataset):
             elif self.sigma_type == 'choice':
                 sigma_value = random.choice(self.sigma_range)
 
-            noise_level = torch.FloatTensor([sigma_value])/255.0
+            noise_level = torch.FloatTensor([sigma_value]) / 255.0
             # noise_level_map = torch.ones((1, img_lq.size(1), img_lq.size(2))).mul_(noise_level).float()
             noise = torch.randn(img_lq.size()).mul_(noise_level).float()
             img_lq.add_(noise)
-
-        else:            
+        else:
             np.random.seed(seed=0)
-            img_lq += np.random.normal(0, self.sigma_test/255.0, img_lq.shape)
+            img_lq += np.random.normal(0, self.sigma_test / 255.0, img_lq.shape)
             # noise_level_map = torch.ones((1, img_lq.shape[0], img_lq.shape[1])).mul_(self.sigma_test/255.0).float()
 
             img_gt, img_lq = img2tensor([img_gt, img_lq],
-                            bgr2rgb=False,
-                            float32=True)
+                                        bgr2rgb=False,
+                                        float32=True)
 
         return {
             'lq': img_lq,
@@ -273,6 +274,7 @@ class Dataset_GaussianDenoising(data.Dataset):
     def __len__(self):
         return len(self.paths)
 
+
 class Dataset_DefocusDeblur_DualPixel_16bit(data.Dataset):
     def __init__(self, opt):
         super(Dataset_DefocusDeblur_DualPixel_16bit, self).__init__()
@@ -282,7 +284,6 @@ class Dataset_DefocusDeblur_DualPixel_16bit(data.Dataset):
         self.io_backend_opt = opt['io_backend']
         self.mean = opt['mean'] if 'mean' in opt else None
         self.std = opt['std'] if 'std' in opt else None
-        
         self.gt_folder, self.lqL_folder, self.lqR_folder = opt['dataroot_gt'], opt['dataroot_lqL'], opt['dataroot_lqR']
         if 'filename_tmpl' in opt:
             self.filename_tmpl = opt['filename_tmpl']
@@ -309,23 +310,22 @@ class Dataset_DefocusDeblur_DualPixel_16bit(data.Dataset):
         img_bytes = self.file_client.get(gt_path, 'gt')
         try:
             img_gt = imfrombytesDP(img_bytes, float32=True)
-        except:
-            raise Exception("gt path {} not working".format(gt_path))
+        except Exception as e:
+            raise Exception(f"{e} gt path {gt_path} not working")
 
         lqL_path = self.paths[index]['lqL_path']
         img_bytes = self.file_client.get(lqL_path, 'lqL')
         try:
             img_lqL = imfrombytesDP(img_bytes, float32=True)
-        except:
-            raise Exception("lqL path {} not working".format(lqL_path))
+        except Exception as e:
+            raise Exception(f"{e} lqL path {lqL_path} not working")
 
         lqR_path = self.paths[index]['lqR_path']
         img_bytes = self.file_client.get(lqR_path, 'lqR')
         try:
             img_lqR = imfrombytesDP(img_bytes, float32=True)
-        except:
-            raise Exception("lqR path {} not working".format(lqR_path))
-
+        except Exception as e:
+            raise Exception(f"{e} lqR path {lqR_path} not working")
 
         # augmentation for training
         if self.opt['phase'] == 'train':
@@ -335,15 +335,14 @@ class Dataset_DefocusDeblur_DualPixel_16bit(data.Dataset):
 
             # random crop
             img_lqL, img_lqR, img_gt = paired_random_crop_DP(img_lqL, img_lqR, img_gt, gt_size, scale, gt_path)
-            
-            # flip, rotation            
+            # flip, rotation
             if self.geometric_augs:
                 img_lqL, img_lqR, img_gt = random_augmentation(img_lqL, img_lqR, img_gt)
         # TODO: color space transform
         # BGR to RGB, HWC to CHW, numpy to tensor
         img_lqL, img_lqR, img_gt = img2tensor([img_lqL, img_lqR, img_gt],
-                                    bgr2rgb=True,
-                                    float32=True)
+                                              bgr2rgb=True,
+                                              float32=True)
         # normalize
         if self.mean is not None or self.std is not None:
             normalize(img_lqL, self.mean, self.std, inplace=True)
@@ -351,7 +350,6 @@ class Dataset_DefocusDeblur_DualPixel_16bit(data.Dataset):
             normalize(img_gt, self.mean, self.std, inplace=True)
 
         img_lq = torch.cat([img_lqL, img_lqR], 0)
-        
         return {
             'lq': img_lq,
             'gt': img_gt,

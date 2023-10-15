@@ -2,6 +2,7 @@ import cv2
 import random
 import numpy as np
 
+
 def mod_crop(img, scale):
     """Mod crop images, used during testing.
 
@@ -20,6 +21,7 @@ def mod_crop(img, scale):
     else:
         raise ValueError(f'Wrong img ndim: {img.ndim}.')
     return img
+
 
 def paired_random_crop(img_gts, img_lqs, lq_patch_size, scale, gt_path):
     """Paired random crop.
@@ -81,6 +83,7 @@ def paired_random_crop(img_gts, img_lqs, lq_patch_size, scale, gt_path):
     if len(img_lqs) == 1:
         img_lqs = img_lqs[0]
     return img_gts, img_lqs
+
 
 def paired_random_crop_DP(img_lqLs, img_lqRs, img_gts, gt_patch_size, scale, gt_path):
     if not isinstance(img_gts, list):
@@ -220,6 +223,7 @@ def img_rotate(img, angle, center=None, scale=1.0):
     rotated_img = cv2.warpAffine(img, matrix, (w, h))
     return rotated_img
 
+
 def data_augmentation(image, mode):
     """
     Performs data augmentation of the input image
@@ -267,9 +271,10 @@ def data_augmentation(image, mode):
 
     return out
 
+
 def random_augmentation(*args):
     out = []
-    flag_aug = random.randint(0,7)
+    flag_aug = random.randint(0, 7)
     for data in args:
         out.append(data_augmentation(data, flag_aug).copy())
     return out

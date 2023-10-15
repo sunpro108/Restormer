@@ -1,6 +1,6 @@
-## Restormer: Efficient Transformer for High-Resolution Image Restoration
-## Syed Waqas Zamir, Aditya Arora, Salman Khan, Munawar Hayat, Fahad Shahbaz Khan, and Ming-Hsuan Yang
-## https://arxiv.org/abs/2111.09881
+# Restormer: Efficient Transformer for High-Resolution Image Restoration
+# Syed Waqas Zamir, Aditya Arora, Salman Khan, Munawar Hayat, Fahad Shahbaz Khan, and Ming-Hsuan Yang
+# https://arxiv.org/abs/2111.09881
 
 import numpy as np
 import os
@@ -28,7 +28,7 @@ parser.add_argument('--sigmas', default='15,25,50', type=str, help='Sigma values
 
 args = parser.parse_args()
 
-####### Load yaml #######
+# Load yaml #
 if args.model_type == 'blind':
     yaml_file = 'Options/GaussianGrayDenoising_Restormer.yml'
 else:
@@ -43,7 +43,7 @@ except ImportError:
 x = yaml.load(open(yaml_file, mode='r'), Loader=Loader)
 
 s = x['network_g'].pop('type')
-##########################
+
 
 sigmas = np.int_(args.sigmas.split(','))
 

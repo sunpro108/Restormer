@@ -1,8 +1,8 @@
-## Restormer: Efficient Transformer for High-Resolution Image Restoration
-## Syed Waqas Zamir, Aditya Arora, Salman Khan, Munawar Hayat, Fahad Shahbaz Khan, and Ming-Hsuan Yang
-## https://arxiv.org/abs/2111.09881
+# Restormer: Efficient Transformer for High-Resolution Image Restoration
+# Syed Waqas Zamir, Aditya Arora, Salman Khan, Munawar Hayat, Fahad Shahbaz Khan, and Ming-Hsuan Yang
+# https://arxiv.org/abs/2111.09881
 
-## Download training and testing data for single-image motion deblurring task
+# Download training and testing data for single-image motion deblurring task
 import os
 # import gdown
 import shutil
@@ -14,12 +14,12 @@ parser.add_argument('--data', type=str, required=True, help='train, test or trai
 parser.add_argument('--dataset', type=str, default='GoPro', help='all, GoPro, HIDE, RealBlur_R, RealBlur_J')
 args = parser.parse_args()
 
-### Google drive IDs ######
-GoPro_train = '1zgALzrLCC_tcXKu_iHQTHukKUVT1aodI'      ## https://drive.google.com/file/d/1zgALzrLCC_tcXKu_iHQTHukKUVT1aodI/view?usp=sharing
-GoPro_test  = '1k6DTSHu4saUgrGTYkkZXTptILyG9RRll'      ## https://drive.google.com/file/d/1k6DTSHu4saUgrGTYkkZXTptILyG9RRll/view?usp=sharing
-HIDE_test = '1XRomKYJF1H92g1EuD06pCQe4o6HlwB7A'        ## https://drive.google.com/file/d/1XRomKYJF1H92g1EuD06pCQe4o6HlwB7A/view?usp=sharing
-RealBlurR_test = '1glgeWXCy7Y0qWDc0MXBTUlZYJf8984hS'   ## https://drive.google.com/file/d/1glgeWXCy7Y0qWDc0MXBTUlZYJf8984hS/view?usp=sharing
-RealBlurJ_test = '1Rb1DhhXmX7IXfilQ-zL9aGjQfAAvQTrW'   ## https://drive.google.com/file/d/1Rb1DhhXmX7IXfilQ-zL9aGjQfAAvQTrW/view?usp=sharing
+# Google drive IDs #
+GoPro_train = '1zgALzrLCC_tcXKu_iHQTHukKUVT1aodI'      # https://drive.google.com/file/d/1zgALzrLCC_tcXKu_iHQTHukKUVT1aodI/view?usp=sharing
+GoPro_test  = '1k6DTSHu4saUgrGTYkkZXTptILyG9RRll'      # https://drive.google.com/file/d/1k6DTSHu4saUgrGTYkkZXTptILyG9RRll/view?usp=sharing
+HIDE_test = '1XRomKYJF1H92g1EuD06pCQe4o6HlwB7A'        # https://drive.google.com/file/d/1XRomKYJF1H92g1EuD06pCQe4o6HlwB7A/view?usp=sharing
+RealBlurR_test = '1glgeWXCy7Y0qWDc0MXBTUlZYJf8984hS'   # https://drive.google.com/file/d/1glgeWXCy7Y0qWDc0MXBTUlZYJf8984hS/view?usp=sharing
+RealBlurJ_test = '1Rb1DhhXmX7IXfilQ-zL9aGjQfAAvQTrW'   # https://drive.google.com/file/d/1Rb1DhhXmX7IXfilQ-zL9aGjQfAAvQTrW/view?usp=sharing
 
 dataset = args.dataset
 

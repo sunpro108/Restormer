@@ -1,4 +1,4 @@
-## Training
+# Training
 
 - To download DPDD training data, run
 ```
@@ -25,7 +25,7 @@ cd Restormer
 **Note:** The above training scripts use 8 GPUs by default. To use any other number of GPUs, modify [Restormer/train.sh](../train.sh) and [DefocusDeblur_Single_8bit_Restormer.yml](Options/DefocusDeblur_Single_8bit_Restormer.yml) 
 
 
-## Evaluation
+# Evaluation
 
 - Download the pre-trained [models](https://drive.google.com/drive/folders/1bRBG8DG_72AGA6-eRePvChlT5ZO4cwJ4?usp=sharing) and place them in `./pretrained_models/`
 

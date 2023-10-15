@@ -1,4 +1,4 @@
-##### Data preparation file for training Restormer on the DPDD Dataset ########
+# Data preparation file for training Restormer on the DPDD Dataset #
 
 import cv2
 import numpy as np
@@ -146,7 +146,7 @@ def val_files(file_):
     cv2.imwrite(hrC_savename, hrC_patch)
 
 
-############ Prepare Training data ####################
+# Prepare Training data #
 num_cores = 10
 src = 'Datasets/Downloads/DPDD/train'
 tar = 'Datasets/train/DPDD'
@@ -176,7 +176,7 @@ to_remove_ratio = 0.3
 Parallel(n_jobs=num_cores)(delayed(train_files)(file_) for file_ in tqdm(files))
 
 
-############ Prepare validation data ####################
+# Prepare validation data #
 val_patch_size = 256
 src = 'Datasets/Downloads/DPDD/val'
 tar = 'Datasets/val/DPDD'

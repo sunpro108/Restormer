@@ -1,17 +1,17 @@
-## ACADEMIC PUBLIC LICENSE
+# ACADEMIC PUBLIC LICENSE
 
-### Permissions
+# Permissions
 :heavy_check_mark: Non-Commercial use
 :heavy_check_mark: Modification
 :heavy_check_mark: Distribution
 :heavy_check_mark: Private use
 
-### Limitations
+# Limitations
 :x: Commercial Use
 :x: Liability
 :x: Warranty
 
-### Conditions
+# Conditions
 :information_source: License and copyright notice
 :information_source: Same License
 

@@ -17,7 +17,7 @@
 - **Blind Denoising:** One model to handle various noise levels
 - **Non-Blind Denoising:** Separate models for each noise level
 
-## Training
+# Training
 
 - Download training (DIV2K, Flickr2K, WED, BSD) and testing datasets, run
 ```
@@ -59,7 +59,7 @@ cd Restormer
 
 **Note:** The above training scripts use 8 GPUs by default. To use any other number of GPUs, modify [Restormer/train.sh](../train.sh) and the yaml file corresponding to each task (e.g., [Denoising/Options/GaussianGrayDenoising_Restormer.yml](Options/GaussianGrayDenoising_Restormer.yml))
 
-## Evaluation
+# Evaluation
 
 - Download the pre-trained [models](https://drive.google.com/drive/folders/1Qwsjyny54RZWa7zC4Apg7exixLBo4uF0?usp=sharing) and place them in `./pretrained_models/`
 
@@ -68,7 +68,7 @@ cd Restormer
 python download_data.py --data test --noise gaussian
 ```
 
-#### Grayscale blind image denoising testing
+# Grayscale blind image denoising testing
 
 - To obtain denoised predictions, run
 ```
@@ -80,7 +80,7 @@ python test_gaussian_gray_denoising.py --model_type blind --sigmas 15,25,50
 python evaluate_gaussian_gray_denoising.py --model_type blind --sigmas 15,25,50
 ```
 
-#### Grayscale non-blind image denoising testing
+# Grayscale non-blind image denoising testing
 
 - To obtain denoised predictions, run
 ```
@@ -92,7 +92,7 @@ python test_gaussian_gray_denoising.py --model_type non_blind --sigmas 15,25,50
 python evaluate_gaussian_gray_denoising.py --model_type non_blind --sigmas 15,25,50
 ```
 
-#### Color blind image denoising testing
+# Color blind image denoising testing
 
 - To obtain denoised predictions, run
 ```
@@ -104,7 +104,7 @@ python test_gaussian_color_denoising.py --model_type blind --sigmas 15,25,50
 python evaluate_gaussian_color_denoising.py --model_type blind --sigmas 15,25,50
 ```
 
-#### Color non-blind image denoising testing
+# Color non-blind image denoising testing
 
 - To obtain denoised predictions, run
 ```
@@ -120,7 +120,7 @@ python evaluate_gaussian_color_denoising.py --model_type non_blind --sigmas 15,2
 
 # Real Image Denoising
 
-## Training
+# Training
 
 - Download SIDD training data, run
 ```
@@ -140,11 +140,11 @@ cd Restormer
 
 **Note:** This training script uses 8 GPUs by default. To use any other number of GPUs, modify [Restormer/train.sh](../train.sh) and [Denoising/Options/RealDenoising_Restormer.yml](Options/RealDenoising_Restormer.yml)
 
-## Evaluation
+# Evaluation
 
 - Download the pre-trained [model](https://drive.google.com/file/d/1FF_4NTboTWQ7sHCq4xhyLZsSl0U0JfjH/view?usp=sharing) and place it in `./pretrained_models/`
 
-#### Testing on SIDD dataset
+# Testing on SIDD dataset
 
 - Download SIDD validation data, run 
 ```
@@ -161,7 +161,7 @@ python test_real_denoising_sidd.py --save_images
 evaluate_sidd.m
 ```
 
-#### Testing on DND dataset
+# Testing on DND dataset
 
 - Download the DND benchmark data, run 
 ```

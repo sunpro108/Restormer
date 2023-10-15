@@ -1,6 +1,6 @@
-## Restormer: Efficient Transformer for High-Resolution Image Restoration
-## Syed Waqas Zamir, Aditya Arora, Salman Khan, Munawar Hayat, Fahad Shahbaz Khan, and Ming-Hsuan Yang
-## https://arxiv.org/abs/2111.09881
+# Restormer: Efficient Transformer for High-Resolution Image Restoration
+# Syed Waqas Zamir, Aditya Arora, Salman Khan, Munawar Hayat, Fahad Shahbaz Khan, and Ming-Hsuan Yang
+# https://arxiv.org/abs/2111.09881
 
 import numpy as np
 import os
@@ -27,7 +27,7 @@ parser.add_argument('--save_images', action='store_true', help='Save denoised im
 
 args = parser.parse_args()
 
-####### Load yaml #######
+# Load yaml #
 yaml_file = 'Options/RealDenoising_Restormer.yml'
 import yaml
 
@@ -39,7 +39,7 @@ except ImportError:
 x = yaml.load(open(yaml_file, mode='r'), Loader=Loader)
 
 s = x['network_g'].pop('type')
-##########################
+
 
 result_dir_mat = os.path.join(args.result_dir, 'mat')
 os.makedirs(result_dir_mat, exist_ok=True)

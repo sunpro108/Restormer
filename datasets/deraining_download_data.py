@@ -1,8 +1,8 @@
-## Restormer: Efficient Transformer for High-Resolution Image Restoration
-## Syed Waqas Zamir, Aditya Arora, Salman Khan, Munawar Hayat, Fahad Shahbaz Khan, and Ming-Hsuan Yang
-## https://arxiv.org/abs/2111.09881
+# Restormer: Efficient Transformer for High-Resolution Image Restoration
+# Syed Waqas Zamir, Aditya Arora, Salman Khan, Munawar Hayat, Fahad Shahbaz Khan, and Ming-Hsuan Yang
+# https://arxiv.org/abs/2111.09881
 
-## Download training and testing data for image deraining task
+# Download training and testing data for image deraining task
 import os
 # import gdown
 import shutil
@@ -13,9 +13,9 @@ parser = argparse.ArgumentParser()
 parser.add_argument('--data', type=str, required=True, help='train, test or train-test')
 args = parser.parse_args()
 
-### Google drive IDs ######
-rain13k_train = '14BidJeG4nSNuFNFDf99K-7eErCq4i47t'   ## https://drive.google.com/file/d/14BidJeG4nSNuFNFDf99K-7eErCq4i47t/view?usp=sharing
-rain13k_test  = '1P_-RAvltEoEhfT-9GrWRdpEi6NSswTs8'   ## https://drive.google.com/file/d/1P_-RAvltEoEhfT-9GrWRdpEi6NSswTs8/view?usp=sharing
+# Google drive IDs #
+rain13k_train = '14BidJeG4nSNuFNFDf99K-7eErCq4i47t'   # https://drive.google.com/file/d/14BidJeG4nSNuFNFDf99K-7eErCq4i47t/view?usp=sharing
+rain13k_test  = '1P_-RAvltEoEhfT-9GrWRdpEi6NSswTs8'   # https://drive.google.com/file/d/1P_-RAvltEoEhfT-9GrWRdpEi6NSswTs8/view?usp=sharing
 
 for data in args.data.split('-'):
     if data == 'train':

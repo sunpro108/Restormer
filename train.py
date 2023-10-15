@@ -239,7 +239,7 @@ def main():
             model.update_learning_rate(
                 current_iter, warmup_iter=opt['train'].get('warmup_iter', -1))
 
-            ### ------Progressive learning ---------------------
+            # ------Progressive learning ---------------------
             j = ((current_iter>groups) !=True).nonzero()[0]
             if len(j) == 0:
                 bs_j = len(groups) - 1
@@ -274,7 +274,7 @@ def main():
                 y1 = y0 + mini_gt_size
                 lq = lq[:,:,x0:x1,y0:y1]
                 gt = gt[:,:,x0*scale:x1*scale,y0*scale:y1*scale]
-            ###-------------------------------------------
+            #-------------------------------------------
 
             model.feed_train_data({'lq': lq, 'gt':gt})
             model.optimize_parameters(current_iter)

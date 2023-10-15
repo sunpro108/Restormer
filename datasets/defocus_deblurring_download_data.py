@@ -1,8 +1,8 @@
-## Restormer: Efficient Transformer for High-Resolution Image Restoration
-## Syed Waqas Zamir, Aditya Arora, Salman Khan, Munawar Hayat, Fahad Shahbaz Khan, and Ming-Hsuan Yang
-## https://arxiv.org/abs/2111.09881
+# Restormer: Efficient Transformer for High-Resolution Image Restoration
+# Syed Waqas Zamir, Aditya Arora, Salman Khan, Munawar Hayat, Fahad Shahbaz Khan, and Ming-Hsuan Yang
+# https://arxiv.org/abs/2111.09881
 
-## Download training and testing data for Defocus Deblurring task
+# Download training and testing data for Defocus Deblurring task
 import os
 # import gdown
 import shutil
@@ -13,10 +13,10 @@ parser = argparse.ArgumentParser()
 parser.add_argument('--data', type=str, required=True, help='train, test or train-test')
 args = parser.parse_args()
 
-### Google drive IDs ######
-dpdd_train = '1bl5i1cDQNvkgVA_x37QdhvvFk1R80kfe'  ## https://drive.google.com/file/d/1bl5i1cDQNvkgVA_x37QdhvvFk1R80kfe/view?usp=sharing
-dpdd_val   = '1KRAmBzluu-IG9-BOsuakB5rjY5_f-kiR'  ## https://drive.google.com/file/d/1KRAmBzluu-IG9-BOsuakB5rjY5_f-kiR/view?usp=sharing
-dpdd_test  = '1dDWUQ_D93XGtcywoUcZE1HOXCV4EuLyw'  ## https://drive.google.com/file/d/1dDWUQ_D93XGtcywoUcZE1HOXCV4EuLyw/view?usp=sharing
+# Google drive IDs #
+dpdd_train = '1bl5i1cDQNvkgVA_x37QdhvvFk1R80kfe'  # https://drive.google.com/file/d/1bl5i1cDQNvkgVA_x37QdhvvFk1R80kfe/view?usp=sharing
+dpdd_val   = '1KRAmBzluu-IG9-BOsuakB5rjY5_f-kiR'  # https://drive.google.com/file/d/1KRAmBzluu-IG9-BOsuakB5rjY5_f-kiR/view?usp=sharing
+dpdd_test  = '1dDWUQ_D93XGtcywoUcZE1HOXCV4EuLyw'  # https://drive.google.com/file/d/1dDWUQ_D93XGtcywoUcZE1HOXCV4EuLyw/view?usp=sharing
 
 for data in args.data.split('-'):
     if data == 'train':

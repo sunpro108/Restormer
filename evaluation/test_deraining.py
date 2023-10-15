@@ -1,6 +1,6 @@
-## Restormer: Efficient Transformer for High-Resolution Image Restoration
-## Syed Waqas Zamir, Aditya Arora, Salman Khan, Munawar Hayat, Fahad Shahbaz Khan, and Ming-Hsuan Yang
-## https://arxiv.org/abs/2111.09881
+# Restormer: Efficient Transformer for High-Resolution Image Restoration
+# Syed Waqas Zamir, Aditya Arora, Salman Khan, Munawar Hayat, Fahad Shahbaz Khan, and Ming-Hsuan Yang
+# https://arxiv.org/abs/2111.09881
 
 
 
@@ -28,7 +28,7 @@ parser.add_argument('--weights', default='./pretrained_models/deraining.pth', ty
 
 args = parser.parse_args()
 
-####### Load yaml #######
+# Load yaml #
 yaml_file = 'Options/Deraining_Restormer.yml'
 import yaml
 
@@ -40,7 +40,7 @@ except ImportError:
 x = yaml.load(open(yaml_file, mode='r'), Loader=Loader)
 
 s = x['network_g'].pop('type')
-##########################
+
 
 model_restoration = Restormer(**x['network_g'])
 
