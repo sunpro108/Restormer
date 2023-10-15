@@ -6,3 +6,5 @@ max-complexity = 18
 select = B,C,E,F,W,T4,B9
 per-file-ignores =
   **/__init__.py:F401,F403,E402
+  */denoising_download_data.py:E501
+  */deraining_download_data.py:E501
