@@ -1,24 +1,25 @@
 import argparse
+from os import path as osp
 import datetime
 import logging
 import math
 import random
 import time
+
 import torch
-from os import path as osp
+import numpy as np
 
 from basicsr.data import create_dataloader, create_dataset
 from basicsr.data.data_sampler import EnlargedSampler
 from basicsr.data.prefetch_dataloader import CPUPrefetcher, CUDAPrefetcher
 from basicsr.models import create_model
-from basicsr.utils import (MessageLogger, check_resume, get_env_info,
+from basicsr.utils import (MessageLogger, check_resume, get_env_info, 
                            get_root_logger, get_time_str, init_tb_logger,
                            init_wandb_logger, make_exp_dirs, mkdir_and_rename,
                            set_random_seed)
 from basicsr.utils.dist_util import get_dist_info, init_dist
 from basicsr.utils.options import dict2str, parse
 
-import numpy as np
 
 def parse_options(is_train=True):
     parser = argparse.ArgumentParser()
@@ -135,16 +136,17 @@ def main():
     # torch.backends.cudnn.deterministic = True
 
     # automatic resume ..
-    state_folder_path = 'experiments/{}/training_states/'.format(opt['name'])
+    state_folder_path = f"experiments/{opt['name']}/training_states/"
     import os
     try:
         states = os.listdir(state_folder_path)
-    except:
+    except Exception as e:
         states = []
+        print(e)
 
     resume_state = None
     if len(states) > 0:
-        max_state_file = '{}.state'.format(max([int(x[0:-6]) for x in states]))
+        max_state_file = f'{max([int(x[0:-6]) for x in states])}.state'
         resume_state = os.path.join(state_folder_path, max_state_file)
         opt['path']['resume_state'] = resume_state
 
@@ -237,7 +239,6 @@ def main():
             model.update_learning_rate(
                 current_iter, warmup_iter=opt['train'].get('warmup_iter', -1))
 
-            
             ### ------Progressive learning ---------------------
             j = ((current_iter>groups) !=True).nonzero()[0]
             if len(j) == 0:
@@ -247,16 +248,22 @@ def main():
 
             mini_gt_size = mini_gt_sizes[bs_j]
             mini_batch_size = mini_batch_sizes[bs_j]
-            
+
             if logger_j[bs_j]:
-                logger.info('\n Updating Patch_Size to {} and Batch_Size to {} \n'.format(mini_gt_size, mini_batch_size*torch.cuda.device_count())) 
+                logger.info(
+                    f'\n Updating Patch_Size to {mini_gt_size} '
+                    f'and Batch_Size to '
+                    f'{mini_batch_size*torch.cuda.device_count()} \n'
+                )
                 logger_j[bs_j] = False
 
             lq = train_data['lq']
             gt = train_data['gt']
 
             if mini_batch_size < batch_size:
-                indices = random.sample(range(0, batch_size), k=mini_batch_size)
+                indices = random.sample(
+                    range(0, batch_size),
+                    k=mini_batch_size)
                 lq = lq[indices]
                 gt = gt[indices]
 
@@ -269,7 +276,6 @@ def main():
                 gt = gt[:,:,x0*scale:x1*scale,y0*scale:y1*scale]
             ###-------------------------------------------
 
-            
             model.feed_train_data({'lq': lq, 'gt':gt})
             model.optimize_parameters(current_iter)
 
