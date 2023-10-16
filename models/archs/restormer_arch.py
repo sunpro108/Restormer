@@ -189,7 +189,7 @@ class Upsample(nn.Module):
         return self.body(x)
 
 
-#---------- Restormer -----------------------
+# --------- Restormer -----------------------
 class Restormer(nn.Module):
     def __init__(self, 
         inp_channels=3, 

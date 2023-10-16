@@ -115,7 +115,7 @@ def prepare_for_ssim(img, k):
 def prepare_for_ssim_rgb(img, k):
     import torch
     with torch.no_grad():
-        img = torch.from_numpy(img).float() #HxWx3
+        img = torch.from_numpy(img).float() # xWx3
 
         conv = torch.nn.Conv2d(1, 1, k, stride=1, padding=k // 2, padding_mode='reflect')
         conv.weight.requires_grad = False

@@ -9,8 +9,8 @@ import math
 
 def calculate_psnr(img1, img2, border=0):
     # img1 and img2 have range [0, 255]
-    #img1 = img1.squeeze()
-    #img2 = img2.squeeze()
+    # mg1 = img1.squeeze()
+    # mg2 = img2.squeeze()
     if not img1.shape == img2.shape:
         raise ValueError('Input images must have the same dimensions.')
     h, w = img1.shape[:2]
@@ -33,8 +33,8 @@ def calculate_ssim(img1, img2, border=0):
     the same outputs as MATLAB's
     img1, img2: [0, 255]
     '''
-    #img1 = img1.squeeze()
-    #img2 = img2.squeeze()
+    # mg1 = img1.squeeze()
+    # mg2 = img2.squeeze()
     if not img1.shape == img2.shape:
         raise ValueError('Input images must have the same dimensions.')
     h, w = img1.shape[:2]

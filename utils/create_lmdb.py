@@ -94,7 +94,7 @@ def create_lmdb_for_SIDD():
     img_path_list, keys = prepare_keys(folder_path, 'PNG')
     make_lmdb_from_imgs(folder_path, lmdb_path, img_path_list, keys)
 
-    #for val
+    # or val
     folder_path = './datasets/SIDD/val/input_crops'
     lmdb_path = './datasets/SIDD/val/input_crops.lmdb'
     mat_path = './datasets/SIDD/ValidationNoisyBlocksSrgb.mat'

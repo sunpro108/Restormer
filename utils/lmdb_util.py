@@ -73,7 +73,7 @@ def make_lmdb_from_imgs(data_path,
         # read all the images to memory (multiprocessing)
         dataset = {}  # use dict to keep the order for multiprocessing
         shapes = {}
-        print(f'Read images with multiprocessing, #thread: {n_thread} ...')
+        print(f'Read images with multiprocessing, # hread: {n_thread} ...')
         pbar = tqdm(total=len(img_path_list), unit='image')
 
         def callback(arg):
